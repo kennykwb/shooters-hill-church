@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Shooters Hill//Church Events//EN
+BEGIN:VEVENT
+UID:uncommon-favor-2026@shootershill
+DTSTAMP:20261104T170000Z
+DTSTART:20261212T143000Z
+SUMMARY:Uncommon Favor 2026 - From Limitations to Elevation
+LOCATION:Shooters Hill\, Bull Bay\, St. Andrew\, Jamaica
+DESCRIPTION:The 11th staging presented by The Church of God (Seventh Day) Shooters Hill.
+END:VEVENT
+END:VCALENDAR

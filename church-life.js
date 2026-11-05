@@ -3,18 +3,55 @@ const socialLinks=[['youtube','YouTube',yt],['facebook','Facebook',fb],['instagr
 function socials(labelled=false){return `<div class="social-icons" aria-label="Church social media">${socialLinks.map(([key,name,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Shooters Hill on ${name} (opens in a new tab)" title="${name}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${socialIcons[key]}</svg>${labelled?`<span>${name}</span>`:''}</a>`).join('')}</div>`}
 const strip=document.createElement('div');strip.className='connect-strip';strip.innerHTML=`<span>We are not just a church; we are family!</span>${socials()}`;document.querySelector('header').before(strip);
 document.querySelector('.footer-grid>div:first-child').insertAdjacentHTML('beforeend',socials());
-const caption='From Limitations to Elevation! Join The Church of God (Seventh Day), Shooters Hill, for the 11th staging of Uncommon Favor on Saturday, 12 December 2026, beginning at 9:30 am. Gather with us in Shooters Hill, Bull Bay, St. Andrew, Jamaica, and share this special day with our church family. Can’t join us in person? Follow our official channels for livestream updates. Bring someone along, and help us spread the word!';
-const feature=`<article class="update-feature" id="uncommon-favor"><div class="poster-column"><button class="poster-open" aria-label="View full Uncommon Favor flyer"><img src="/assets/uncommon-favor-2026.jpg" alt="Uncommon Favor 2026 flyer: 11th staging, From Limitations to Elevation, 12 December 2026 at 9:30 am, Shooters Hill, Bull Bay, St. Andrew, Jamaica"></button><span class="poster-hint">Select the flyer to view it in full</span></div><div class="update-copy"><span class="update-tag">Upcoming gathering · 11th staging</span><h2>Uncommon<br><em>Favor 2026</em></h2><p class="event-theme">From Limitations to Elevation</p><p>${caption}</p><dl class="event-facts"><div><dt>When</dt><dd>Saturday, 12 December 2026<br>9:30 am · Jamaica time</dd></div><div><dt>Where</dt><dd>Shooters Hill, Bull Bay<br>St. Andrew, Jamaica</dd></div></dl><div class="actions"><a class="btn" href="${maps}" target="_blank" rel="noopener noreferrer">Get directions ↗</a><a class="btn outline" href="/uncommon-favor-2026.ics" download>Add to calendar ↓</a></div><div class="event-follow"><span class="eyebrow">Follow for updates</span>${socials(true)}</div><button class="share-event textlink">Share this event ↗</button><span class="share-status" role="status"></span></div></article>`;
-const pagePath=location.pathname.replace(/index.html$/,'');
-if(pagePath==='/updates/'){
- document.querySelector('main').innerHTML=`<div class="updates-head"><span class="eyebrow">Life at Shooters Hill</span><h1>Church Life<br><em>& Updates</em></h1><p>Gatherings, announcements and moments from our church family.</p></div><section class="updates-feed">${feature}</section><section class="updates-connect"><div><span class="eyebrow">Keep in touch</span><h2>Stay close to<br><em>church life.</em></h2><p>Follow our official channels for service broadcasts, announcements and more.</p></div>${socials(true)}</section>`;
+const pagePath = location.pathname.replace(/index.html$/, '');
+const gatherings = [
+  {
+    id: 'evening-of-information',
+    title: 'An Evening of Information',
+    date: 'Saturday, 7 November 2026',
+    time: '4:00 pm',
+    caption: 'Bring your family and your questions to Shooters Hill. An attorney will explain wills and land titles, a Sagicor representative will discuss insurance and financial protection, and a funeral director from Golden Gates Mortuary Ltd will walk us through funeral arrangements. Join us for an evening of conversation about the decisions families face when planning ahead.',
+    calendar: '/evening-of-information.ics'
+  },
+  {
+    id: 'uncommon-favor',
+    title: 'Uncommon Favor 2026',
+    date: 'Saturday, 12 December 2026',
+    time: '9:30 am',
+    caption: 'Join our church family for the 11th staging of Uncommon Favor. This year’s theme is “From Limitations to Elevation.” Gather with us in Shooters Hill, Bull Bay, St. Andrew, or follow our official channels for livestream updates.',
+    image: '/assets/uncommon-favor-2026.jpg',
+    calendar: '/uncommon-favor-2026.ics'
+  }
+];
+
+function eventCard(event) {
+  const artwork = event.image
+    ? `<a class="gathering-art" href="${event.image}" data-flyer="${event.id}" aria-label="View full ${event.title} flyer"><img loading="lazy" src="${event.image}" alt="${event.title} flyer"></a>`
+    : `<div class="gathering-type" aria-hidden="true"><img src="/assets/church-logo-updated.png" alt=""><span>An Evening of</span><b>Information</b><small>Legal matters · Insurance · Funeral planning</small></div>`;
+  return `<article class="gathering" id="${event.id}">${artwork}<div class="gathering-body">
+    <p class="gathering-date">${event.date} · ${event.time} Jamaica time</p>
+    <h2>${event.title}</h2><p>${event.caption}</p>
+    <div class="actions"><a class="btn" href="${maps}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
+    <a class="btn outline" href="${event.calendar}" download>Add to calendar ↓</a></div>
+    <button type="button" class="share-event textlink" data-share="${event.id}">Share event ↗</button>
+    <span class="share-status" role="status"></span></div></article>`;
 }
-if(pagePath==='/events/'){
- const block=document.createElement('section');block.className='events-highlight';block.innerHTML=`<span class="eyebrow">Upcoming at Shooters Hill</span><h2>Uncommon Favor 2026</h2><p>12 December · 9:30 am · Shooters Hill, Bull Bay<br>Theme: From Limitations to Elevation</p><a class="btn" href="/updates/#uncommon-favor">View event & flyer ↗</a>`;document.querySelector('.pagehead').after(block);
- document.querySelectorAll('.notice').forEach(n=>{if(n.textContent.includes('No upcoming special events'))n.remove()});
+
+function gatheringsSection() {
+  return `<section class="gatherings-section"><h2>Upcoming gatherings</h2><div class="gathering-grid">${gatherings.map(eventCard).join('')}</div></section>`;
 }
-if(pagePath==='/'){
- const teaser=document.createElement('section');teaser.className='home-update';teaser.innerHTML=`<a href="/updates/#uncommon-favor" class="home-update-image"><img src="/assets/uncommon-favor-2026.jpg" alt="Uncommon Favor 2026 event flyer" loading="lazy"></a><div><span class="eyebrow">Coming up · 12 December 2026</span><h2>From Limitations<br><em>to Elevation.</em></h2><p>Join our church family for the 11th staging of Uncommon Favor, beginning at 9:30 am in Shooters Hill, Bull Bay.</p><a class="btn" href="/updates/#uncommon-favor">Explore church updates ↗</a></div>`;document.querySelector('main').insertBefore(teaser,document.querySelector('main>.visit'));
+
+if (pagePath === '/updates/') {
+  document.querySelector('main').innerHTML = `<div class="updates-head"><span class="eyebrow">Life at Shooters Hill</span><h1>Church Life<br><em>& Updates</em></h1><p>Gatherings, announcements and moments from our church family.</p></div>${gatheringsSection()}<section class="updates-connect"><div><h2>Follow our church</h2><p>Find service broadcasts and announcements on our official channels.</p></div>${socials(true)}</section>`;
+}
+if (pagePath === '/events/') {
+  document.querySelector('.pagehead').insertAdjacentHTML('afterend', gatheringsSection());
+  document.querySelectorAll('.notice').forEach(note => {
+    if (note.textContent.includes('No upcoming special events')) note.remove();
+  });
+}
+if (pagePath === '/') {
+  document.querySelector('main>.visit').insertAdjacentHTML('beforebegin', gatheringsSection());
  const hero=document.querySelector('.hero');hero.querySelector('.hero-content').innerHTML='<div class="eyebrow" id="slide-tag"></div><h1 id="slide-title"></h1><p id="slide-copy"></p><div class="actions" id="slide-actions"></div>';
  const slides=[
  ['We are family','We are not just a church;<br><em>we are family!</em>','Welcome to Shooters Hill. A place to worship, grow and share life together.','/assets/slide-5.webp','50% 0%','/contact/','Plan your visit'],
@@ -31,5 +68,26 @@ if(pagePath==='/'){
  hero.addEventListener('touchcancel',()=>{touchStart=null;},{passive:true});
  dots.querySelectorAll('button').forEach(b=>b.onclick=()=>show(+b.dataset.slide));hero.querySelector('#prev').onclick=()=>show(slide-1);hero.querySelector('#next').onclick=()=>show(slide+1);const pause=hero.querySelector('#pause');function state(){pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',paused?'Play slideshow':'Pause slideshow')}pause.onclick=()=>{paused=!paused;state()};state();show(0);setInterval(()=>{if(!paused&&!document.hidden&&!hero.matches(':hover,:focus-within'))show(slide+1)},10000);
 }
-const openPoster=document.querySelector('.poster-open');if(openPoster){const dialog=document.createElement('dialog');dialog.className='flyer-dialog';dialog.setAttribute('aria-label','Uncommon Favor event flyer');dialog.innerHTML='<button class="close-flyer" aria-label="Close flyer">Close ×</button><img src="/assets/uncommon-favor-2026.jpg" alt="Uncommon Favor 2026 event flyer"><a href="/assets/uncommon-favor-2026.jpg" download="Uncommon-Favor-2026.jpg">Download flyer ↓</a>';document.body.append(dialog);openPoster.onclick=()=>dialog.showModal();dialog.querySelector('button').onclick=()=>dialog.close();dialog.onclick=e=>{if(e.target===dialog)dialog.close()};}
-const share=document.querySelector('.share-event');if(share)share.onclick=async()=>{const url=location.origin+'/updates/#uncommon-favor';try{if(navigator.share)await navigator.share({title:'Uncommon Favor 2026',text:'From Limitations to Elevation · 12 December, 9:30 am · Shooters Hill, Bull Bay.',url});else{await navigator.clipboard.writeText(url);document.querySelector('.share-status').textContent='Event link copied.'}}catch(e){if(e.name!=='AbortError')document.querySelector('.share-status').textContent='Copy the page address to share this event.'}};
+document.querySelectorAll('[data-flyer]').forEach(link => {
+  const event = gatherings.find(item => item.id === link.dataset.flyer);
+  const dialog = document.createElement('dialog');
+  dialog.className = 'flyer-dialog';
+  dialog.setAttribute('aria-label', event.title + ' flyer');
+  dialog.innerHTML = `<button class="close-flyer">Close ×</button><img src="${event.image}" loading="lazy" alt="${event.title} flyer"><a href="${event.image}" download>Download flyer ↓</a>`;
+  document.body.append(dialog);
+  link.onclick = e => { e.preventDefault(); dialog.showModal(); };
+  dialog.querySelector('button').onclick = () => dialog.close();
+  dialog.onclick = e => { if (e.target === dialog) dialog.close(); };
+});
+document.querySelectorAll('[data-share]').forEach(button => {
+  button.onclick = async () => {
+    const event = gatherings.find(item => item.id === button.dataset.share);
+    const url = location.origin + '/updates/#' + event.id;
+    try {
+      if (navigator.share) await navigator.share({title:event.title, text:event.date + ' · ' + event.time, url});
+      else { await navigator.clipboard.writeText(url); button.nextElementSibling.textContent = 'Event link copied.'; }
+    } catch (error) {
+      if (error.name !== 'AbortError') button.nextElementSibling.textContent = url;
+    }
+  };
+});

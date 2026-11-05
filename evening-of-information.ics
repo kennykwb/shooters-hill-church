@@ -1,0 +1,11 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Shooters Hill//Church gatherings//EN
+BEGIN:VEVENT
+UID:evening-of-information-20261107@cog7dayshootershill.org
+DTSTAMP:20261105T000000Z
+DTSTART:20261107T210000Z
+SUMMARY:An Evening of Information
+LOCATION:Shooters Hill\, Bull Bay\, St. Andrew\, Jamaica
+END:VEVENT
+END:VCALENDAR

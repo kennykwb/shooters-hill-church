@@ -11,6 +11,7 @@ const gatherings = [
     date: 'Saturday, 7 November 2026',
     time: '4:00 pm',
     caption: 'Bring your family and your questions to Shooters Hill. An attorney will explain wills and land titles, a Sagicor representative will discuss insurance and financial protection, and a funeral director from Golden Gates Mortuary Ltd will walk us through funeral arrangements. Join us for an evening of conversation about the decisions families face when planning ahead.',
+    image: '/assets/evening-of-information-2026.jpg',
     calendar: '/evening-of-information.ics'
   },
   {

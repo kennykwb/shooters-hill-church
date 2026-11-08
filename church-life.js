@@ -45,8 +45,7 @@ const jamaicaCalendar = new Intl.DateTimeFormat('en-CA', {
 });
 
 function upcomingGatherings(now = new Date()) {
-  const parts = jamaicaCalendar.formatToParts(now);
-  const date = ['year', 'month', 'day'].map(type => parts.find(part => part.type === type).value).join('-');
+  const date = calendarDayKey(now);
   return gatherings.filter(event => event.eventDate >= date);
 }
 
@@ -54,6 +53,100 @@ function gatheringsSection() {
   const upcoming = upcomingGatherings();
   return `<section class="gatherings-section" ${upcoming.length ? '' : 'hidden'}><h2>Upcoming gatherings</h2><div class="gathering-grid">${upcoming.map(eventCard).join('')}</div></section>`;
 }
+
+function calendarDayKey(now = new Date()) {
+  const parts = jamaicaCalendar.formatToParts(now);
+  return ['year', 'month', 'day'].map(type => parts.find(part => part.type === type).value).join('-');
+}
+
+function mountChurchCalendar() {
+  const calendar = document.createElement('section');
+  calendar.className = 'church-calendar';
+  calendar.setAttribute('aria-labelledby', 'church-calendar-title');
+  calendar.innerHTML = `
+    <span class="eyebrow">Plan your visit</span>
+    <h2 id="church-calendar-title">Church Calendar</h2>
+    <p>Worship and upcoming gatherings in Shooters Hill. All times are Jamaica time.</p>
+    <div class="calendar-layout">
+      <div class="calendar-panel">
+        <div class="calendar-toolbar">
+          <button type="button" data-month="-1" aria-label="Previous month">‹</button>
+          <h3 id="calendar-month" aria-live="polite"></h3>
+          <button type="button" data-month="1" aria-label="Next month">›</button>
+        </div>
+        <div class="calendar-days" aria-label="Days of the month"></div>
+        <button class="calendar-today textlink" type="button">Today</button>
+      </div>
+      <div class="calendar-agenda">
+        <h3>This month’s gatherings</h3>
+        <ul></ul>
+        <p class="calendar-empty" hidden>No upcoming gatherings this month.</p>
+        <a class="textlink" href="/events/">View Events ↗</a>
+      </div>
+    </div>`;
+  document.querySelector('main>.visit').before(calendar);
+
+  const monthLabel = calendar.querySelector('#calendar-month');
+  const days = calendar.querySelector('.calendar-days');
+  const agenda = calendar.querySelector('.calendar-agenda ul');
+  const empty = calendar.querySelector('.calendar-empty');
+  const monthFormat = new Intl.DateTimeFormat('en-JM', {month: 'long', year: 'numeric', timeZone: 'UTC'});
+  const dayFormat = new Intl.DateTimeFormat('en-JM', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'});
+  const currentMonth = () => new Date(calendarDayKey().slice(0, 7) + '-01T00:00:00Z');
+  let month = currentMonth();
+
+  function render() {
+    const today = calendarDayKey();
+    const monthKey = month.toISOString().slice(0, 7);
+    const lastDay = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth() + 1, 0)).getUTCDate();
+    const events = upcomingGatherings().filter(event => event.eventDate.startsWith(monthKey + '-'));
+    monthLabel.textContent = monthFormat.format(month);
+    days.innerHTML = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => `<span class="calendar-weekday">${day}</span>`).join('');
+    days.innerHTML += '<span aria-hidden="true"></span>'.repeat(month.getUTCDay());
+    agenda.replaceChildren();
+
+    for (let day = 1; day <= lastDay; day++) {
+      const key = monthKey + '-' + String(day).padStart(2, '0');
+      const date = new Date(key + 'T00:00:00Z');
+      const entries = events.filter(event => event.eventDate === key);
+      if (key >= today && date.getUTCDay() === 6) {
+        entries.unshift({title: 'Sabbath worship', time: '9:30 am–4:00 pm'});
+      }
+      const cell = document.createElement('time');
+      cell.dateTime = key;
+      cell.textContent = day;
+      cell.classList.toggle('calendar-has-event', entries.length > 0);
+      cell.setAttribute('aria-label', dayFormat.format(date) + (entries.length ? ', ' + entries.length + ' gatherings' : ''));
+      if (key === today) cell.setAttribute('aria-current', 'date');
+      days.append(cell);
+      for (const entry of entries) {
+        const item = document.createElement('li');
+        const title = document.createElement('strong');
+        const detail = document.createElement('span');
+        const decoded = document.createElement('textarea');
+        decoded.innerHTML = entry.title;
+        title.textContent = decoded.value;
+        detail.textContent = [dayFormat.format(date), entry.time].filter(Boolean).join(' · ');
+        item.append(title, detail);
+        agenda.append(item);
+      }
+    }
+    empty.hidden = agenda.childElementCount > 0;
+  }
+
+  calendar.querySelectorAll('[data-month]').forEach(button => button.addEventListener('click', () => {
+    month.setUTCMonth(month.getUTCMonth() + Number(button.dataset.month));
+    render();
+  }));
+  calendar.querySelector('.calendar-today').addEventListener('click', () => {
+    month = currentMonth();
+    render();
+  });
+  render();
+  return render;
+}
+
+let refreshChurchCalendar;
 
 if (pagePath === '/updates/') {
   document.querySelector('main').innerHTML = `<div class="updates-head"><span class="eyebrow">Life at Shooters Hill</span><h1>Church Life<br><em>& Updates</em></h1><p>Gatherings, announcements and moments from our church family.</p></div>${gatheringsSection()}<section class="updates-connect"><div><h2>Follow our church</h2><p>Find service broadcasts and announcements on our official channels.</p></div>${socials(true)}</section>`;
@@ -66,6 +159,7 @@ if (pagePath === '/events/') {
 }
 if (pagePath === '/') {
   document.querySelector('main>.visit').insertAdjacentHTML('beforebegin', gatheringsSection());
+  refreshChurchCalendar = mountChurchCalendar();
  const hero=document.querySelector('.hero');hero.querySelector('.hero-content').innerHTML='<div class="eyebrow" id="slide-tag"></div><h1 id="slide-title"></h1><p id="slide-copy"></p><div class="actions" id="slide-actions"></div>';
  const slides=[
  ['We are family','We are not just a church;<br><em>we are family!</em>','Welcome to Shooters Hill. A place to worship, grow and share life together.','/assets/slide-5.webp','50% 0%','/contact/','Plan your visit'],
@@ -156,6 +250,7 @@ async function connectChurchContent() {
   try {
     const {page, posts} = await loadChurchContent();
     applyChurchPosts(posts);
+    refreshChurchCalendar?.();
     applyPageCopy(page);
   } catch (error) {
     console.warn('Using local church content because Sanity could not load.', error);

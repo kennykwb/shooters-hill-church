@@ -165,3 +165,7 @@ button,a{-webkit-tap-highlight-color:transparent}h1,h2,h3{overflow-wrap:break-wo
 .past-streams .replay-nav {
   margin-inline: auto;
 }
+
+.past-streams > p {
+  margin-inline: auto;
+}

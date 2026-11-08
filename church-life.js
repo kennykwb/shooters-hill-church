@@ -7,6 +7,7 @@ const pagePath = location.pathname.replace(/index.html$/, '');
 const gatherings = [
   {
     id: 'evening-of-information',
+    eventDate: '2026-11-07',
     title: 'An Evening of Information',
     date: 'Saturday, 7 November 2026',
     time: '4:00 pm',
@@ -16,6 +17,7 @@ const gatherings = [
   },
   {
     id: 'uncommon-favor',
+    eventDate: '2026-12-12',
     title: 'Uncommon Favor 2026',
     date: 'Saturday, 12 December 2026',
     time: '9:30 am',
@@ -38,8 +40,19 @@ function eventCard(event) {
     <span class="share-status" role="status"></span></div></article>`;
 }
 
+const jamaicaCalendar = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Jamaica', year: 'numeric', month: '2-digit', day: '2-digit'
+});
+
+function upcomingGatherings(now = new Date()) {
+  const parts = jamaicaCalendar.formatToParts(now);
+  const date = ['year', 'month', 'day'].map(type => parts.find(part => part.type === type).value).join('-');
+  return gatherings.filter(event => event.eventDate >= date);
+}
+
 function gatheringsSection() {
-  return `<section class="gatherings-section"><h2>Upcoming gatherings</h2><div class="gathering-grid">${gatherings.map(eventCard).join('')}</div></section>`;
+  const upcoming = upcomingGatherings();
+  return `<section class="gatherings-section" ${upcoming.length ? '' : 'hidden'}><h2>Upcoming gatherings</h2><div class="gathering-grid">${upcoming.map(eventCard).join('')}</div></section>`;
 }
 
 if (pagePath === '/updates/') {
@@ -110,9 +123,11 @@ function applyChurchPosts(posts) {
   });
   for (const post of posts.filter(post => post.kind === 'event' && post.title)) {
     const existing = gatherings.find(event => post._id.startsWith('event-' + event.id + '-'));
-    const date = new Date(post.date);
+    const eventDate = post.date || existing?.eventDate;
+    const date = new Date(eventDate);
     const event = {
       ...existing,
+      eventDate,
       id: existing?.id || escapeChurchText(post._id),
       title: escapeChurchText(post.title),
       caption: escapeChurchText(post.details ?? existing?.caption),
@@ -124,7 +139,9 @@ function applyChurchPosts(posts) {
     if (existing) Object.assign(existing, event);
     else gatherings.push(event);
   }
-  grid.innerHTML = gatherings.map(eventCard).join('');
+  const upcoming = upcomingGatherings();
+  grid.innerHTML = upcoming.map(eventCard).join('');
+  grid.closest('.gatherings-section').hidden = upcoming.length === 0;
 
   const updates = document.querySelector('.updates-head');
   const announcements = posts.filter(post => post.kind !== 'event' && post.title);

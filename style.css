@@ -103,3 +103,37 @@ button,a{-webkit-tap-highlight-color:transparent}h1,h2,h3{overflow-wrap:break-wo
 .gathering-body{padding:clamp(18px,3vw,38px)}.gathering-date{font-weight:bold;font-size:14px;color:#5c4a2d}
 .gathering h2{font-size:clamp(30px,3.5vw,48px);letter-spacing:-1px}.gathering .actions{gap:8px}
 @media(max-width:700px){.gathering-grid{grid-template-columns:1fr}.gathering-art,.gathering-type{height:270px}}
+
+#replay-player, .replay-nav {
+  max-width: 760px;
+}
+
+#replay-player {
+  margin-top: 2rem;
+}
+
+.replay-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 1rem 0 2rem;
+}
+
+.replay-nav button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.replay-card iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #161616;
+}
+
+.replay-card h3 {
+  margin: 0.85rem 0 0.5rem;
+}

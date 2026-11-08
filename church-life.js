@@ -27,13 +27,13 @@ const gatherings = [
 
 function eventCard(event) {
   const artwork = event.image
-    ? `<a class="gathering-art" href="${event.image}" data-flyer="${event.id}" aria-label="View full ${event.title} flyer"><img loading="lazy" src="${event.image}" alt="${event.title} flyer"></a>`
-    : `<div class="gathering-type" aria-hidden="true"><img src="/assets/church-logo-updated.png" alt=""><span>An Evening of</span><b>Information</b><small>Legal matters · Insurance · Funeral planning</small></div>`;
+    ? `<a class="gathering-art" href="${event.image}" data-flyer="${event.id}" aria-label="View full ${event.title} flyer"><img loading="lazy" src="${event.image}" alt="${event.alt || event.title + ' flyer'}"></a>`
+    : `<div class="gathering-type" aria-hidden="true"><img src="/assets/church-logo-updated.png" alt=""></div>`;
   return `<article class="gathering" id="${event.id}">${artwork}<div class="gathering-body">
-    <p class="gathering-date">${event.date} · ${event.time} Jamaica time</p>
+    <p class="gathering-date">${event.date}${event.time ? ' · ' + event.time + ' Jamaica time' : ''}</p>
     <h2>${event.title}</h2><p>${event.caption}</p>
     <div class="actions"><a class="btn" href="${maps}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
-    <a class="btn outline" href="${event.calendar}" download>Add to calendar ↓</a></div>
+    ${event.calendar ? `<a class="btn outline" href="${event.calendar}" download>Add to calendar ↓</a>` : ''}</div>
     <button type="button" class="share-event textlink" data-share="${event.id}">Share event ↗</button>
     <span class="share-status" role="status"></span></div></article>`;
 }
@@ -69,26 +69,103 @@ if (pagePath === '/') {
  hero.addEventListener('touchcancel',()=>{touchStart=null;},{passive:true});
  dots.querySelectorAll('button').forEach(b=>b.onclick=()=>show(+b.dataset.slide));hero.querySelector('#prev').onclick=()=>show(slide-1);hero.querySelector('#next').onclick=()=>show(slide+1);const pause=hero.querySelector('#pause');function state(){pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',paused?'Play slideshow':'Pause slideshow')}pause.onclick=()=>{paused=!paused;state()};state();show(0);setInterval(()=>{if(!paused&&!document.hidden&&!hero.matches(':hover,:focus-within'))show(slide+1)},10000);
 }
-document.querySelectorAll('[data-flyer]').forEach(link => {
-  const event = gatherings.find(item => item.id === link.dataset.flyer);
-  const dialog = document.createElement('dialog');
-  dialog.className = 'flyer-dialog';
-  dialog.setAttribute('aria-label', event.title + ' flyer');
-  dialog.innerHTML = `<button class="close-flyer">Close ×</button><img src="${event.image}" loading="lazy" alt="${event.title} flyer"><a href="${event.image}" download>Download flyer ↓</a>`;
-  document.body.append(dialog);
-  link.onclick = e => { e.preventDefault(); dialog.showModal(); };
-  dialog.querySelector('button').onclick = () => dialog.close();
-  dialog.onclick = e => { if (e.target === dialog) dialog.close(); };
-});
-document.querySelectorAll('[data-share]').forEach(button => {
-  button.onclick = async () => {
-    const event = gatherings.find(item => item.id === button.dataset.share);
-    const url = location.origin + '/updates/#' + event.id;
-    try {
-      if (navigator.share) await navigator.share({title:event.title, text:event.date + ' · ' + event.time, url});
-      else { await navigator.clipboard.writeText(url); button.nextElementSibling.textContent = 'Event link copied.'; }
-    } catch (error) {
-      if (error.name !== 'AbortError') button.nextElementSibling.textContent = url;
+async function loadChurchContent() {
+  const query = `{
+    "page": *[_type == "churchPage" && path == $path][0]{title, copy[]{original, text}},
+    "posts": *[_type == "churchPost"] | order(date desc, _id asc){
+      _id, title, kind, details, date, "posterUrl": poster.asset->url, "posterAlt": poster.alt
     }
-  };
-});
+  }`;
+  const path = pagePath.endsWith('/') ? pagePath : pagePath + '/';
+  const url = new URL('https://l7aiz2j9.api.sanity.io/v2025-02-19/data/query/production');
+  url.search = new URLSearchParams({query, perspective: 'published', '$path': JSON.stringify(path)});
+  const response = await fetch(url, {credentials: 'omit', signal: AbortSignal.timeout(5000)});
+  if (!response.ok) throw new Error('Sanity query returned ' + response.status);
+  return (await response.json()).result;
+}
+
+function applyPageCopy(page) {
+  const main = document.querySelector('main');
+  const replacements = new Map((page?.copy || [])
+    .filter(({original, text}) => typeof original === 'string' && typeof text === 'string' && original !== text)
+    .map(({original, text}) => [original.replace(/\s+/g, ' ').trim(), text]));
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const original = node.data.replace(/\s+/g, ' ').trim();
+    if (replacements.has(original)) node.data = node.data.replace(node.data.trim(), () => replacements.get(original));
+  }
+}
+
+function escapeChurchText(value) {
+  const entities = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
+  return String(value ?? '').replace(/[&<>"']/g, character => entities[character]);
+}
+
+function applyChurchPosts(posts) {
+  const grid = document.querySelector('.gathering-grid');
+  if (!grid) return;
+  const dates = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+  });
+  for (const post of posts.filter(post => post.kind === 'event' && post.title)) {
+    const existing = gatherings.find(event => post._id.startsWith('event-' + event.id + '-'));
+    const date = new Date(post.date);
+    const event = {
+      ...existing,
+      id: existing?.id || escapeChurchText(post._id),
+      title: escapeChurchText(post.title),
+      caption: escapeChurchText(post.details ?? existing?.caption),
+      date: Number.isNaN(date.valueOf()) ? existing?.date || '' : dates.format(date),
+      image: post.posterUrl?.startsWith('https://cdn.sanity.io/images/l7aiz2j9/production/')
+        ? escapeChurchText(post.posterUrl) : existing?.image,
+      alt: escapeChurchText(post.posterAlt)
+    };
+    if (existing) Object.assign(existing, event);
+    else gatherings.push(event);
+  }
+  grid.innerHTML = gatherings.map(eventCard).join('');
+
+  const updates = document.querySelector('.updates-head');
+  const announcements = posts.filter(post => post.kind !== 'event' && post.title);
+  if (updates && announcements.length) {
+    updates.insertAdjacentHTML('afterend', `<section><h2>Announcements</h2>${announcements.map(post =>
+      `<article><h3>${escapeChurchText(post.title)}</h3><p>${escapeChurchText(post.details)}</p></article>`
+    ).join('')}</section>`);
+  }
+}
+
+async function connectChurchContent() {
+  try {
+    const {page, posts} = await loadChurchContent();
+    applyChurchPosts(posts);
+    applyPageCopy(page);
+  } catch (error) {
+    console.warn('Using local church content because Sanity could not load.', error);
+  }
+  document.querySelectorAll('[data-flyer]').forEach(link => {
+    const event = gatherings.find(item => item.id === link.dataset.flyer);
+    const dialog = document.createElement('dialog');
+    dialog.className = 'flyer-dialog';
+    dialog.setAttribute('aria-label', link.getAttribute('aria-label'));
+    dialog.innerHTML = `<button class="close-flyer">Close ×</button><img src="${event.image}" loading="lazy" alt="${event.alt || event.title + ' flyer'}"><a href="${event.image}" download>Download flyer ↓</a>`;
+    document.body.append(dialog);
+    link.onclick = e => { e.preventDefault(); dialog.showModal(); };
+    dialog.querySelector('button').onclick = () => dialog.close();
+    dialog.onclick = e => { if (e.target === dialog) dialog.close(); };
+  });
+  document.querySelectorAll('[data-share]').forEach(button => {
+    button.onclick = async () => {
+      const event = gatherings.find(item => item.id === button.dataset.share);
+      const url = location.origin + '/updates/#' + event.id;
+      try {
+        if (navigator.share) await navigator.share({title:event.title, text:[event.date, event.time].filter(Boolean).join(' · '), url});
+        else { await navigator.clipboard.writeText(url); button.nextElementSibling.textContent = 'Event link copied.'; }
+      } catch (error) {
+        if (error.name !== 'AbortError') button.nextElementSibling.textContent = url;
+      }
+    };
+  });
+}
+
+connectChurchContent();

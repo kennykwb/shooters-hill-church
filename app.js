@@ -29,7 +29,7 @@ const watch = heading('Worship online', 'Watch live from Shooters Hill.', 'Join 
   <p>The player shows our service while we’re broadcasting. Between services, you can catch up on previous Sabbaths.</p>
   <div class="actions">${button('Past services', yt+'/streams')}${button('Watch on YouTube', yt+'/live')}</div>
 </section>
-<section aria-labelledby="past-streams-title">
+<section class="past-streams" aria-labelledby="past-streams-title">
   <span class="eyebrow">Service replays</span>
   <h2 id="past-streams-title">Past Streams</h2>
   <p>Watch recent broadcasts from Shooters Hill.</p>

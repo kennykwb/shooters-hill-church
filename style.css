@@ -156,3 +156,12 @@ button,a{-webkit-tap-highlight-color:transparent}h1,h2,h3{overflow-wrap:break-wo
 .calendar-agenda li span { display: block; font-size: 0.9rem; margin-top: 0.2rem; }
 .calendar-empty { margin: 0.75rem 0; }
 @media (max-width: 700px) { .calendar-layout { grid-template-columns: minmax(0, 1fr); } }
+
+.past-streams {
+  text-align: center;
+}
+
+.past-streams #replay-player,
+.past-streams .replay-nav {
+  margin-inline: auto;
+}

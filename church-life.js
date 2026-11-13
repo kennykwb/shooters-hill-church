@@ -27,11 +27,63 @@ const gatherings = [
   }
 ];
 
+
+const portraitFlyers = [
+  ['nicola', 'Nicola Cruickshank'],
+  ['taysha', 'Taysha Walters'],
+  ['miesha', 'Miesha Green-Codling'],
+  ['tajae', 'Tajáe Walker'],
+  ['ludisha', 'Ludisha Walker'],
+  ['natty', 'Natty Charlton']
+];
+
+function portraitCarousel(event) {
+  if (event.id !== 'uncommon-favor') return '';
+  return `<div class="portrait-carousel" role="region" aria-label="Uncommon Favor featured participants" aria-roledescription="carousel">
+    <h3>Featuring</h3>
+    <div class="portrait-track" id="uncommon-portraits" tabindex="0" aria-label="Portrait flyers. Swipe or use the arrow keys to browse.">
+      ${portraitFlyers.map(([slug, name], index) => `<a class="portrait-slide" href="/assets/uncommon-favor-${slug}.jpg" data-flyer="uncommon-favor" aria-label="View full ${name} flyer">
+        <img src="/assets/uncommon-favor-${slug}.jpg" loading="lazy" alt="Uncommon Favor 2026 featuring ${name}" width="1199" height="1312">
+      </a>`).join('')}
+    </div>
+    <div class="portrait-controls">
+      <button type="button" data-portrait-step="-1" aria-label="Previous portrait flyer" aria-controls="uncommon-portraits">←</button>
+      <span class="portrait-count" role="status">1 / ${portraitFlyers.length}</span>
+      <button type="button" data-portrait-step="1" aria-label="Next portrait flyer" aria-controls="uncommon-portraits">→</button>
+    </div>
+  </div>`;
+}
+
+function mountPortraitCarousels() {
+  document.querySelectorAll('.portrait-carousel').forEach(carousel => {
+    const track = carousel.querySelector('.portrait-track');
+    const slides = Array.from(track.children);
+    const count = carousel.querySelector('.portrait-count');
+    const currentIndex = () => Math.round(track.scrollLeft / track.clientWidth);
+    const move = step => {
+      const index = (currentIndex() + step + slides.length) % slides.length;
+      track.scrollTo({left: index * track.clientWidth, behavior: 'instant'});
+    };
+    carousel.querySelectorAll('[data-portrait-step]').forEach(button => {
+      button.onclick = () => move(Number(button.dataset.portraitStep));
+    });
+    track.addEventListener('scroll', () => {
+      count.textContent = `${currentIndex() + 1} / ${slides.length}`;
+    }, {passive: true});
+    track.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        move(e.key === 'ArrowLeft' ? -1 : 1);
+      }
+    });
+  });
+}
+
 function eventCard(event) {
   const artwork = event.image
     ? `<a class="gathering-art" href="${event.image}" data-flyer="${event.id}" aria-label="View full ${event.title} flyer"><img loading="lazy" src="${event.image}" alt="${event.alt || event.title + ' flyer'}"></a>`
     : `<div class="gathering-type" aria-hidden="true"><img src="/assets/church-logo-updated.png" alt=""></div>`;
-  return `<article class="gathering" id="${event.id}">${artwork}<div class="gathering-body">
+  return `<article class="gathering" id="${event.id}">${artwork}${portraitCarousel(event)}<div class="gathering-body">
     <p class="gathering-date">${event.date}${event.time ? ' · ' + event.time + ' Jamaica time' : ''}</p>
     <h2>${event.title}</h2><p>${event.caption}</p>
     <div class="actions"><a class="btn" href="${maps}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>
@@ -255,12 +307,14 @@ async function connectChurchContent() {
   } catch (error) {
     console.warn('Using local church content because Sanity could not load.', error);
   }
+  mountPortraitCarousels();
   document.querySelectorAll('[data-flyer]').forEach(link => {
-    const event = gatherings.find(item => item.id === link.dataset.flyer);
+    const flyerUrl = link.getAttribute("href");
+    const flyerAlt = link.querySelector("img").alt;
     const dialog = document.createElement('dialog');
     dialog.className = 'flyer-dialog';
     dialog.setAttribute('aria-label', link.getAttribute('aria-label'));
-    dialog.innerHTML = `<button class="close-flyer">Close ×</button><img src="${event.image}" loading="lazy" alt="${event.alt || event.title + ' flyer'}"><a href="${event.image}" download>Download flyer ↓</a>`;
+    dialog.innerHTML = `<button class="close-flyer">Close ×</button><img src="${flyerUrl}" loading="lazy" alt="${flyerAlt}"><a href="${flyerUrl}" download>Download flyer ↓</a>`;
     document.body.append(dialog);
     link.onclick = e => { e.preventDefault(); dialog.showModal(); };
     dialog.querySelector('button').onclick = () => dialog.close();

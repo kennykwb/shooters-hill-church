@@ -169,3 +169,13 @@ button,a{-webkit-tap-highlight-color:transparent}h1,h2,h3{overflow-wrap:break-wo
 .past-streams > p {
   margin-inline: auto;
 }
+
+/* Full portrait flyers below the official event artwork. */
+.portrait-carousel { padding: 20px; min-width: 0; border-top: 1px solid var(--line); }
+.portrait-carousel h3 { margin: 0 0 14px; font-size: 24px; }
+.portrait-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+.portrait-slide { display: block; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
+.portrait-slide img { display: block; width: 100%; height: auto; object-fit: contain; }
+.portrait-controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; }
+.portrait-controls button { min-width: 44px; min-height: 44px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); font-size: 24px; cursor: pointer; }
+.portrait-track:focus-visible, .portrait-controls button:focus-visible { outline: 3px solid #617b19; outline-offset: 2px; }

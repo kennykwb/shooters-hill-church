@@ -30,11 +30,11 @@ const gatherings = [
 
 const portraitFlyers = [
   ['nicola', 'Nicola Cruickshank'],
-  ['taysha', 'Taysha Walters'],
+  ['taysha', 'Taysha McLean'],
   ['miesha', 'Miesha Green-Codling'],
   ['tajae', 'Tajáe Walker'],
   ['ludisha', 'Ludisha Walker'],
-  ['natty', 'Natty Charlton']
+  ['natty', 'Charlton Natty']
 ];
 
 function portraitCarousel(event) {

@@ -179,3 +179,15 @@ button,a{-webkit-tap-highlight-color:transparent}h1,h2,h3{overflow-wrap:break-wo
 .portrait-controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; }
 .portrait-controls button { min-width: 44px; min-height: 44px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); font-size: 24px; cursor: pointer; }
 .portrait-track:focus-visible, .portrait-controls button:focus-visible { outline: 3px solid #617b19; outline-offset: 2px; }
+
+/* Center event listings on the Events and Updates pages. */
+:is(.pagehead, .updates-head) + .gatherings-section > h2 {
+  text-align: center;
+}
+@media (min-width: 701px) {
+  :is(.pagehead, .updates-head) + .gatherings-section .gathering:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - clamp(18px, 3vw, 44px)) / 2);
+  }
+}

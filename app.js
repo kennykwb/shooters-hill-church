@@ -1,4 +1,4 @@
-const yt='https://www.youtube.com/@cog-shootershilljamaica9924',fb='https://www.facebook.com/share/1hk3Rvx2Nk/?mibextid=wwXIfr',ig='https://www.instagram.com/cogjshootershill?dlrf=MWE4bXdoY24xaGhxZg%3D%3D&utm_source=qr',maps='https://maps.google.com/?q=17.950003,-76.700005';
+const yt='https://www.youtube.com/channel/UCgstM8XDMcfls60K7oP8wkw',fb='https://www.facebook.com/share/1hk3Rvx2Nk/?mibextid=wwXIfr',ig='https://www.instagram.com/cogjshootershill?dlrf=MWE4bXdoY24xaGhxZg%3D%3D&utm_source=qr',maps='https://maps.google.com/?q=17.950003,-76.700005';
 const pages=['Home','About','Ministries','Events','Updates','Watch Live','Contact'];const paths=['/','/about/','/ministries/','/events/','/updates/','/watch/','/contact/'];const current=location.pathname.replace(/index.html$/,'');const active=Math.max(0,paths.indexOf(current));
 const brand=`<img class="church-logo" src="/assets/church-logo-updated.png" alt="Church of God (Seventh Day) emblem"><span>THE CHURCH OF GOD<br>(SEVENTH DAY)<br><small>SHOOTERS HILL</small></span>`;
 const button=(label,url,style='')=>`<a class="btn ${style}" href="${url}">${label} <span aria-hidden="true">↗</span></a>`;
@@ -25,8 +25,8 @@ function replayCard([id, title]) {
 }
 const watch = heading('Worship online', 'Watch live from Shooters Hill.', 'Join us for Sabbath worship on Saturdays, 9:30 am–4:00 pm, Jamaica time.') + `
 <section aria-label="Church livestream" style="max-width:1240px;margin:auto;padding:clamp(18px,4vw,56px) clamp(12px,4vw,48px)">
-  <iframe title="Shooters Hill live worship service" src="https://www.youtube.com/embed/live_stream?channel=UCgstM8XDMcfls60K7oP8wkw&amp;playsinline=1" style="display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:#171411" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  <p>The player shows our service while we’re broadcasting. Between services, you can catch up on previous Sabbaths.</p>
+  <iframe title="Shooters Hill live worship service" id="service-player" src="https://www.youtube-nocookie.com/embed/UhUex8nUuIg?playsinline=1" style="display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:#171411" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <p>Watch the current or most recent Sabbath service here. You can also check our channel for a live broadcast.</p>
   <div class="actions">${button('Past services', yt+'/streams')}${button('Watch on YouTube', yt+'/live')}</div>
 </section>
 <section class="past-streams" aria-labelledby="past-streams-title">
@@ -66,4 +66,17 @@ if (replayPlayer) {
 
   document.querySelector('#replay-previous').addEventListener('click', () => showReplay(-1));
   document.querySelector('#replay-next').addEventListener('click', () => showReplay(1));
+}
+
+const servicePlayer = document.getElementById('service-player');
+if (servicePlayer) {
+  fetch('/api/live/')
+    .then(response => response.ok ? response.json() : null)
+    .then(data => {
+      if (data && /^[A-Za-z0-9_-]{11}$/.test(data.videoId)) {
+        const src = 'https://www.youtube-nocookie.com/embed/' + data.videoId + '?playsinline=1';
+        if (servicePlayer.src !== src) servicePlayer.src = src;
+      }
+    })
+    .catch(() => {}); // Keep the most recently verified service available.
 }

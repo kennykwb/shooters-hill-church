@@ -215,21 +215,7 @@ if (pagePath === '/events/') {
 if (pagePath === '/') {
   document.querySelector('main>.visit').insertAdjacentHTML('beforebegin', gatheringsSection());
   refreshChurchCalendar = mountChurchCalendar();
- const hero=document.querySelector('.hero');hero.querySelector('.hero-content').innerHTML='<div class="eyebrow" id="slide-tag"></div><h1 id="slide-title"></h1><p id="slide-copy"></p><div class="actions" id="slide-actions"></div>';
- const slides=[
- ['We are family','We are not just a church;<br><em>we are family!</em>','Welcome to Shooters Hill. A place to worship, grow and share life together.','/assets/slide-5.webp','50% 0%','/contact/','Plan your visit'],
- ['New beginnings','A step of faith.<br><em>A new beginning.</em>','Growing in faith, together as a church family.','/assets/slide-1.webp','52% 0%','/about/documents/beliefs/','Explore our faith'],
- ['Care & connection','Together in faith.<br><em>Close in fellowship.</em>','Join us for worship and encouragement every Sabbath.','/assets/slide-2.webp','53% 0%','/contact/','Join us this Sabbath'],
- ['Worship & prayer','Many voices.<br><em>One family.</em>','Gather with us in Shooters Hill on Saturdays, 9:30 am–4:00 pm.','/assets/slide-3.webp','50% 0%','/watch/','Watch online'],
- ['Life at Shooters Hill','Faith shared.<br><em>Community celebrated.</em>','Discover the gatherings and moments that bring us together.','/assets/slide-4.webp','50% 0%','/updates/','Church life & updates']];
- hero.insertAdjacentHTML('afterbegin',`<div class="hero-photos" aria-hidden="true">${slides.map((s,i)=>`<img src="${s[3]}" alt="" style="object-position:${s[4]}" ${i===0?'fetchpriority="high"':''}>`).join('')}</div>`);
- hero.style.background='none';let slide=0,paused=matchMedia('(prefers-reduced-motion: reduce)').matches;const dots=hero.querySelector('.dots');dots.innerHTML=slides.map((s,i)=>`<button class="dot" aria-label="Show photo ${i+1}: ${s[0]}" data-slide="${i}"></button>`).join('');
- function show(n){slide=(n+slides.length)%slides.length;const s=slides[slide];hero.querySelector('#slide-tag').textContent=s[0];hero.querySelector('#slide-title').innerHTML=s[1];hero.querySelector('#slide-copy').textContent=s[2];hero.querySelector('#slide-actions').innerHTML=`<a class="btn light" href="${s[5]}">${s[6]} ↗</a>`;hero.querySelectorAll('.hero-photos img').forEach((im,i)=>im.classList.toggle('visible',i===slide));dots.querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('active',i===slide);b.setAttribute('aria-pressed',String(i===slide))});}
- let touchStart=null;
- hero.addEventListener('touchstart',e=>{if(e.touches.length===1&&!e.target.closest('a,button'))touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
- hero.addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)show(slide+(dx<0?1:-1));},{passive:true});
- hero.addEventListener('touchcancel',()=>{touchStart=null;},{passive:true});
- dots.querySelectorAll('button').forEach(b=>b.onclick=()=>show(+b.dataset.slide));hero.querySelector('#prev').onclick=()=>show(slide-1);hero.querySelector('#next').onclick=()=>show(slide+1);const pause=hero.querySelector('#pause');function state(){pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',paused?'Play slideshow':'Pause slideshow')}pause.onclick=()=>{paused=!paused;state()};state();show(0);setInterval(()=>{if(!paused&&!document.hidden&&!hero.matches(':hover,:focus-within'))show(slide+1)},10000);
+
 }
 async function loadChurchContent() {
   const query = `{

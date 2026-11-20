@@ -36,7 +36,8 @@ const portraitFlyers = [
   ['ludisha', 'Ludisha Walker'],
   ['natty', 'Charlton Natty'],
   ['salome', 'Salome Gilburn-Lewis', 1086, 1448],
-  ['ralique', 'Ralique Grant', 1086, 1448]
+  ['ralique', 'Ralique Grant', 1086, 1448],
+  ['odean', 'Pastor O’Dean Bailey', 1086, 1448]
 ];
 
 function portraitCarousel(event) {

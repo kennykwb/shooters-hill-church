@@ -34,7 +34,9 @@ const portraitFlyers = [
   ['miesha', 'Miesha Green-Codling'],
   ['tajae', 'Tajáe Walker'],
   ['ludisha', 'Ludisha Walker'],
-  ['natty', 'Charlton Natty']
+  ['natty', 'Charlton Natty'],
+  ['salome', 'Salome Gilburn-Lewis', 1086, 1448],
+  ['ralique', 'Ralique Grant', 1086, 1448]
 ];
 
 function portraitCarousel(event) {
@@ -42,8 +44,8 @@ function portraitCarousel(event) {
   return `<div class="portrait-carousel" role="region" aria-label="Uncommon Favor featured participants" aria-roledescription="carousel">
     <h3>Featuring</h3>
     <div class="portrait-track" id="uncommon-portraits" tabindex="0" aria-label="Portrait flyers. Swipe or use the arrow keys to browse.">
-      ${portraitFlyers.map(([slug, name], index) => `<a class="portrait-slide" href="/assets/uncommon-favor-${slug}.jpg" data-flyer="uncommon-favor" aria-label="View full ${name} flyer">
-        <img src="/assets/uncommon-favor-${slug}.jpg" loading="lazy" alt="Uncommon Favor 2026 featuring ${name}" width="1199" height="1312">
+      ${portraitFlyers.map(([slug, name, width = 1199, height = 1312]) => `<a class="portrait-slide" href="/assets/uncommon-favor-${slug}.jpg" data-flyer="uncommon-favor" aria-label="View full ${name} flyer">
+        <img src="/assets/uncommon-favor-${slug}.jpg" loading="lazy" alt="Uncommon Favor 2026 featuring ${name}" width="${width}" height="${height}">
       </a>`).join('')}
     </div>
     <div class="portrait-controls">

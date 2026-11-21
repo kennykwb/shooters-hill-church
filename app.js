@@ -40,8 +40,8 @@ function replayCard([id, title]) {
 }
 const watch = heading('Worship online', 'Watch live from Shooters Hill.', 'Join us for Sabbath worship on Saturdays, 9:30 am–4:00 pm, Jamaica time.') + `
 <section aria-label="Church livestream" style="max-width:1240px;margin:auto;padding:clamp(18px,4vw,56px) clamp(12px,4vw,48px)">
-  <iframe title="Shooters Hill live worship service" id="service-player" src="https://www.youtube-nocookie.com/embed/UhUex8nUuIg?playsinline=1" style="display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:#171411" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  <p>Watch the current or most recent Sabbath service here. You can also check our channel for a live broadcast.</p>
+  <iframe title="Shooters Hill live worship service" id="service-player" src="https://www.youtube.com/embed/live_stream?channel=UCgstM8XDMcfls60K7oP8wkw&amp;playsinline=1" style="display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;background:#171411" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <p id="live-status" role="status">Checking for the current broadcast…</p>
   <div class="actions">${button('Past services', yt+'/streams')}${button('Watch on YouTube', yt+'/live')}</div>
 </section>
 <section class="past-streams" aria-labelledby="past-streams-title">
@@ -85,13 +85,27 @@ if (replayPlayer) {
 
 const servicePlayer = document.getElementById('service-player');
 if (servicePlayer) {
-  fetch('/api/live/')
-    .then(response => response.ok ? response.json() : null)
-    .then(data => {
-      if (data && /^[A-Za-z0-9_-]{11}$/.test(data.videoId)) {
-        const src = 'https://www.youtube-nocookie.com/embed/' + data.videoId + '?playsinline=1';
-        if (servicePlayer.src !== src) servicePlayer.src = src;
-      }
-    })
-    .catch(() => {}); // Keep the most recently verified service available.
+  const liveStatus = document.getElementById('live-status');
+  let checking = false;
+  async function refreshLive() {
+    if (checking || document.hidden) return;
+    checking = true;
+    try {
+      const response = await fetch('/api/live/?t=' + Date.now(), { cache: 'no-store', signal: AbortSignal.timeout(16000) });
+      if (!response.ok) throw new Error('Broadcast lookup unavailable');
+      const data = await response.json();
+      if (!/^[A-Za-z0-9_-]{11}$/.test(data.videoId || '')) throw new Error('No broadcast returned');
+      const src = 'https://www.youtube-nocookie.com/embed/' + data.videoId + '?playsinline=1';
+      if (servicePlayer.src !== src) servicePlayer.src = src;
+      liveStatus.textContent = data.isLive ? 'Live now' + (data.title ? ' — ' + data.title : '') : 'Latest service. This page checks automatically for new broadcasts.';
+    } catch {
+      liveStatus.textContent = 'Checking again shortly. You can also use Watch on YouTube to open our live channel.';
+    } finally {
+      checking = false;
+    }
+  }
+  refreshLive();
+  setInterval(refreshLive, 30000);
+  document.addEventListener('visibilitychange', refreshLive);
+  window.addEventListener('online', refreshLive);
 }

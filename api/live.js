@@ -55,11 +55,12 @@ async function resolveBroadcast(source) {
   const player = readPlayer(html);
   const details = player?.videoDetails;
   const data = readPlayer(html, 'ytInitialData');
-  const live = findLiveVideo(data);
+  const live = source.endsWith('/streams') ? findLiveVideo(data) : null;
   if (live) return live;
   const canonical = html.match(/<link\b[^>]*\brel="canonical"[^>]*\bhref="([^"]+)"/i);
   const url = new URL(canonical?.[1] || response.url || source, source);
-  const videoId = details?.videoId || url.searchParams.get('v');
+  const currentVideo = data?.currentVideoEndpoint?.watchEndpoint?.videoId;
+  const videoId = details?.videoId || url.searchParams.get('v') || currentVideo;
   if (!/^[\w-]{11}$/.test(videoId || '') || (details?.channelId && details.channelId !== channelId)) {
     throw new Error('No broadcast found: ' + response.url + ' title=' + (html.match(/<title>(.*?)<\/title>/)?.[1] || '') + ' bytes=' + html.length + ' canonical=' + canonical?.[1] + ' ids=' + (html.match(/"videoId":"[^"]+"/g) || []).slice(0,3).join(','));
   }

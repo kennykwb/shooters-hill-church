@@ -38,7 +38,7 @@ async function resolveBroadcast(source) {
   const url = new URL(canonical?.[1] || response.url);
   const videoId = details?.videoId || url.searchParams.get('v');
   if (!/^[\w-]{11}$/.test(videoId || '') || (details?.channelId && details.channelId !== channelId)) {
-    throw new Error('No broadcast found');
+    throw new Error('No broadcast found: ' + response.url + ' title=' + (html.match(/<title>(.*?)<\/title>/)?.[1] || '') + ' bytes=' + html.length);
   }
   return { videoId, isLive: details?.isLive === true, title: details?.title || '' };
 }
@@ -47,6 +47,7 @@ module.exports = async function live(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const results = await Promise.allSettled(sources.map(resolveBroadcast));
   const broadcasts = results.filter(result => result.status === 'fulfilled').map(result => result.value);
+  console.log('Broadcast lookups', results.map(result => result.status === 'rejected' ? String(result.reason) : result.value));
   const current = broadcasts.find(video => video.isLive) || broadcasts[0];
   if (current) return res.status(200).json(current);
   return res.status(503).json({ videoId: null, retryAfter: 30 });

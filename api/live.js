@@ -35,7 +35,7 @@ async function resolveBroadcast(source) {
   const player = readPlayer(html);
   const details = player?.videoDetails;
   const canonical = html.match(/<link\b[^>]*\brel="canonical"[^>]*\bhref="([^"]+)"/i);
-  const url = new URL(canonical?.[1] || response.url);
+  const url = new URL(canonical?.[1] || response.url || source, source);
   const videoId = details?.videoId || url.searchParams.get('v');
   if (!/^[\w-]{11}$/.test(videoId || '') || (details?.channelId && details.channelId !== channelId)) {
     throw new Error('No broadcast found: ' + response.url + ' title=' + (html.match(/<title>(.*?)<\/title>/)?.[1] || '') + ' bytes=' + html.length);

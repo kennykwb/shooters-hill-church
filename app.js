@@ -23,15 +23,9 @@ const home=`<section class="featured-event" aria-labelledby="featured-event-titl
 const about=heading('Our church','A church.<br><em>A family.</em>','We are not just a church; we are family!')+`<section class="two-col"><div><span class="eyebrow">Shooters Hill · Jamaica</span><h2>A local church.<br><em>A wider family.</em></h2><p>Welcome to The Church of God (Seventh Day), Shooters Hill. We are a local branch of the Jamaica Conference, gathering on Saturdays for worship and fellowship.</p><p>Our shared faith centres on Jesus Christ, the teaching of the Bible, and the seventh-day Sabbath. Come and get to know our church family.</p>${button('Visit Shooters Hill','/contact/')}</div><img src="/assets/congregation.jpg" alt="Shooters Hill church congregation" style="width:100%;height:470px;object-fit:cover"></section><section class="dark"><span class="eyebrow">Our shared purpose</span><h2>Follow Jesus.<br><em>Serve together.</em></h2><p>As part of the Jamaica Conference, we share a mission to make disciples and equip people for service. We seek to express our faith through worship, compassion, sharing the gospel, fellowship, and discipleship.</p><a class="textlink" href="https://www.cog7dayjamaica.com/whatwedo" target="_blank" rel="noopener">Explore our Conference’s approach ↗</a></section><section><div class="section-heading"><div><span class="eyebrow">Our foundation</span><h2>What we believe.</h2></div><a class="textlink" href="https://www.cog7dayjamaica.com/doctrine" target="_blank" rel="noopener">Read the full statement of faith ↗</a></div><p>This introduction summarises the Jamaica Conference’s published beliefs.</p><div class="cards"><article class="card"><span class="number">01</span><h3>Jesus at the centre</h3><p>Jesus Christ is the head of the Church and the focus of our faith. Salvation comes by God’s grace through faith in Him.</p></article><article class="card"><span class="number">02</span><h3>Guided by Scripture</h3><p>The Old and New Testaments are God’s inspired Word and our authority for faith and daily life.</p></article><article class="card"><span class="number">03</span><h3>The Sabbath</h3><p>The seventh-day Sabbath is a gift for rest, worship, and doing good.</p></article></div><details><summary>Life in the Spirit</summary><p>We seek the Holy Spirit’s guidance and power for daily living and service, with faith, obedience, and love as evidence of His work.</p></details><details><summary>Baptism and the Lord’s Supper</summary><p>The Conference teaches baptism by immersion following faith and repentance, and an annual Lord’s Supper accompanied by footwashing.</p></details><details><summary>Our hope in Christ</summary><p>We look forward to Jesus Christ’s return and God’s eternal kingdom.</p></details><a class="textlink" href="https://www.cog7dayjamaica.com/whoweare" target="_blank" rel="noopener">Our identity as believers ↗</a></section><section class="history"><div class="eyebrow">Our wider church story</div><h2>Our roots in Jamaica.</h2><p>The following milestones describe the Jamaica Conference’s history, rather than the founding of the Shooters Hill branch.</p><div class="cards"><article class="card"><span class="number">1930</span><h3>A beginning in a home</h3><p>At Hannah Smith’s invitation, Elder James Murray came from Trinidad on June 14, 1930. Prayer meetings and Bible studies began at her home on Long Mountain Road, now Mountain View Avenue.</p></article><article class="card"><span class="number">1931–33</span><h3>A growing fellowship</h3><p>As the congregation grew, the church sought a site for a building. Elder Charles J. Ellis joined the work and supervised it under Elder Murray’s direction.</p></article><article class="card"><span class="number">1933</span><h3>Caribbean connections</h3><p>On November 4, 1933, Elder Ellis was appointed the British West Indies representative by the General Conference in Salem, West Virginia. He later became the recognised Caribbean leader after Elder Murray’s death.</p></article></div><a class="textlink" href="https://www.cog7dayjamaica.com/history" target="_blank" rel="noopener">Read the Conference history ↗</a></section>`+visit;
 const ministries=heading('Church life','Many gifts.<br><em>One family.</em>','Growing in faith, encouraging one another, and serving together.')+`<section><div class="two-col"><div><span class="eyebrow">Serving together</span><h2>There is a place<br><em>to contribute.</em></h2></div><div><p>The Jamaica Conference describes its departments as ways for believers to use their gifts, strengthen the church, and serve others. Every contribution matters.</p><p>Ask us during your visit about activities and opportunities here at Shooters Hill.</p>${button('Plan a visit','/contact/')}</div></div><div class="section-heading" style="margin-top:60px"><div><span class="eyebrow">Our wider church family</span><h2>Conference ministries.</h2></div><a class="textlink" href="https://www.cog7dayjamaica.com/departments" target="_blank" rel="noopener">Explore the departments ↗</a></div><p>These ministries are listed by the Jamaica Conference. Contact Shooters Hill in person for local participation, leaders, and meeting times.</p><div class="cards"><article class="card"><span class="number">01</span><h3>Women’s Ministry</h3><p>Find the Conference’s information about its ministry for women.</p></article><article class="card"><span class="number">02</span><h3>Men’s Ministry</h3><p>Explore the wider church’s national men’s ministry.</p></article><article class="card"><span class="number">03</span><h3>Youth · F.Y.C.</h3><p>The Faithful Youth Challengers’ Department is part of the Conference’s ministry structure.</p></article></div><div class="notice">The Conference also lists an evangelism team, a Ministerial Council, and a wellness ministry. Its website provides the national information; local arrangements will be added as confirmed.</div></section><section class="dark"><span class="eyebrow">Shooters Hill online</span><h2>Faith, beyond<br><em>the church walls.</em></h2><p>Our technical team supports the church’s livestream production. Watch our services online or ask in person about helping the team.</p>${button('Watch online','/watch/','light')}</section>`+visit;
 const events=heading('Gather with us','Life together.','Our regular gathering and where to find the latest church announcements.')+`<section class="two-col"><div><span class="eyebrow">Our weekly gathering</span><div class="schedule"><div class="calendar">EVERY<b>SAT</b></div><div><h3>Sabbath gathering</h3><p>9:30 am–4:00 pm<br>Shooters Hill, Jamaica</p><a class="textlink" href="${maps}" target="_blank" rel="noopener">Get directions ↗</a></div></div><a class="btn" href="/sabbath.ics" download>Add weekly gathering to calendar ↓</a></div><div><h2>Stay in the loop.</h2><p>Check our Facebook page for current flyers, special services, and church announcements.</p>${button('See church announcements',fb)}<p class="notice">Special event dates will appear here once confirmed. No upcoming special events have been added yet.</p></div></section>`+visit;
-const pastStreams = [
-  ["p5_Y4Rb0AC8", "Divine Worship || Don&#x27;t let the Storm Steal your Faith! || Pastor Donovan Walker  || Nov. 7, 2026"],
-  ["WuBhbNVLL9E", "The Thanksgiving Service For Pastor Joscelyn Clifford Cain November 1, 2026"],
-  ["O9-8twj18xo", "Reflection Service for the life of Pastor Joslyn Cain || October 31, 2026"],
-  ["5rS5IosOU9M", "Divine worship Hour || Watch Out for Dead Flies! || Deacon Javal Thorpe || October 31, 2026"],
-  ["HqrrrmSeJkg", "Divine worship Hour || Early for the Funeral! || Min.Dr. Sandrae Powell || October 24, 2026"],
-  ["yaNAkuoK4ls", "Divine worship Hour || Snipers in the amp! || Sis Ianiesha Bailey || October 17, 2026"],
-];
+let pastStreams = [];
 function replayCard([id, title]) {
+  title = title.replace(/[&<>"\']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"\'":'&#39;'}[character]));
   return `<article class="replay-card">
     <iframe src="https://www.youtube-nocookie.com/embed/${id}" title="${title}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
     <h3>${title}</h3>
@@ -47,12 +41,12 @@ const watch = heading('Worship online', 'Watch live from Shooters Hill.', 'Join 
 <section class="past-streams" aria-labelledby="past-streams-title">
   <span class="eyebrow">Service replays</span>
   <h2 id="past-streams-title">Past Streams</h2>
-  <p>Watch recent broadcasts from Shooters Hill.</p>
-  <div id="replay-player">${replayCard(pastStreams[0])}</div>
+  <p>Watch our six most recent completed broadcasts.</p><p id="replay-status" role="status"></p>
+  <div id="replay-player"><p>Loading recent broadcasts…</p></div>
   <div class="replay-nav" role="group" aria-label="Past stream navigation">
-    <button type="button" class="btn outline" id="replay-previous" aria-label="Previous replay">Previous</button>
-    <span id="replay-position" role="status" aria-atomic="true">1 of ${pastStreams.length}</span>
-    <button type="button" class="btn outline" id="replay-next" aria-label="Next replay">Next</button>
+    <button type="button" class="btn outline" id="replay-previous" disabled aria-label="Previous replay">Previous</button>
+    <span id="replay-position" role="status" aria-atomic="true">Loading…</span>
+    <button type="button" class="btn outline" id="replay-next" disabled aria-label="Next replay">Next</button>
   </div>
   ${button('See all past streams on YouTube',yt+'/streams','outline')}
 </section>` + visit;
@@ -71,16 +65,54 @@ document.querySelectorAll('a[href^="https://"]').forEach(link=>{link.target="_bl
 const replayPlayer = document.querySelector('#replay-player');
 if (replayPlayer) {
   const position = document.querySelector('#replay-position');
+  const status = document.querySelector('#replay-status');
+  const previous = document.querySelector('#replay-previous');
+  const next = document.querySelector('#replay-next');
   let replayIndex = 0;
+  let refreshing = false;
 
   function showReplay(step) {
+    if (!pastStreams.length) return;
     replayIndex = (replayIndex + step + pastStreams.length) % pastStreams.length;
     replayPlayer.innerHTML = replayCard(pastStreams[replayIndex]);
-    position.textContent = `${replayIndex + 1} of ${pastStreams.length}`;
+    position.textContent = (replayIndex + 1) + ' of ' + pastStreams.length;
   }
+  previous.addEventListener('click', () => showReplay(-1));
+  next.addEventListener('click', () => showReplay(1));
 
-  document.querySelector('#replay-previous').addEventListener('click', () => showReplay(-1));
-  document.querySelector('#replay-next').addEventListener('click', () => showReplay(1));
+  async function refreshReplays() {
+    if (refreshing || document.hidden) return;
+    refreshing = true;
+    try {
+      const response = await fetch('/api/past-streams/', { cache: 'no-cache', signal: AbortSignal.timeout(16000) });
+      if (!response.ok) throw new Error('Replays unavailable');
+      const data = await response.json();
+      if (!Array.isArray(data.streams) || !data.streams.length ||
+          data.streams.some(stream => !/^[A-Za-z0-9_-]{11}$/.test(stream.videoId) || typeof stream.title !== 'string')) {
+        throw new Error('Invalid replay listing');
+      }
+      const selectedId = pastStreams[replayIndex]?.[0];
+      pastStreams = data.streams.slice(0, 6).map(stream => [stream.videoId, stream.title]);
+      const selectedIndex = pastStreams.findIndex(stream => stream[0] === selectedId);
+      replayIndex = Math.max(0, selectedIndex);
+      if (selectedIndex < 0) showReplay(0);
+      else position.textContent = (replayIndex + 1) + ' of ' + pastStreams.length;
+      previous.disabled = next.disabled = pastStreams.length < 2;
+      status.textContent = '';
+    } catch {
+      status.textContent = 'Unable to refresh recent broadcasts. Retrying automatically. You can also view all past streams on YouTube.';
+      if (!pastStreams.length) {
+        replayPlayer.textContent = '';
+        position.textContent = 'Waiting for broadcasts';
+      }
+    } finally {
+      refreshing = false;
+    }
+  }
+  refreshReplays();
+  setInterval(refreshReplays, 60000);
+  document.addEventListener('visibilitychange', refreshReplays);
+  window.addEventListener('online', refreshReplays);
 }
 
 const servicePlayer = document.getElementById('service-player');
